@@ -52,21 +52,6 @@ boolean is_configured = false;
 /*LED GPIO pin*/
 const char led = 13;
 
-void setup() {
-  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
-  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
-  Serial.begin(115200);
-
-  SmartG.begin();
-  
-  client.setServer(mqtt_server, 1883);
-  client.setCallback(callback);
-  
-  /*start DHT sensor */
-  dht.setup(DHTPIN, DHTesp::DHT22);
-  Serial.println("DHT initiated");
-}
-
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
   Serial.print(topic);
@@ -121,6 +106,21 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
 }
 
+void setup() {
+  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
+  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
+  Serial.begin(115200);
+
+  SmartG.begin();
+  
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
+  
+  /*start DHT sensor */
+  dht.setup(DHTPIN, DHTesp::DHT22);
+  Serial.println("DHT initiated");
+}
+
 void reconnect()
 {
   // Loop until we're reconnected
@@ -155,16 +155,6 @@ int readLuminosity()
   adc1_config_width(ADC_WIDTH_BIT_10);   //Range 0-1023 
   adc1_config_channel_atten(ADC1_CHANNEL_3,ADC_ATTEN_DB_11);  //ADC_ATTEN_DB_11 = 0-3,6V
   return adc1_get_raw( ADC1_CHANNEL_3 ); //Read analog
-}
-
-void loop()
-{
-  if(WiFi.status() == WL_CONNECTED) 
-  {
-    loop_configured();
-  }
-  
-  SmartG.handle_client();
 }
 
 void loop_configured()
@@ -227,6 +217,16 @@ void loop_configured()
 }
 
 void loop_reset_config() {
+  SmartG.handle_client();
+}
+
+void loop()
+{
+  if(WiFi.status() == WL_CONNECTED) 
+  {
+    loop_configured();
+  }
+  
   SmartG.handle_client();
 }
 
