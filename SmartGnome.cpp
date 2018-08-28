@@ -176,10 +176,6 @@ void SmartGnome::configure()
   server->send(200, "text/plain", "Configured");
 
   // Restart the Gnome
-//  grab_config();
-//  disconnect_station();
-//  delay(50);
-//  connect_station();
   begin();
 }
 
@@ -231,7 +227,8 @@ void SmartGnome::begin()
   start_webserver();
 }
 
-void SmartGnome::handle_root() {
+void SmartGnome::handle_root()
+{
   char temp[400];
   int sec = millis() / 1000;
   int min = sec / 60;
@@ -240,26 +237,27 @@ void SmartGnome::handle_root() {
   snprintf(temp, 400,
 
            "<html>\
-  <head>\
-    <meta http-equiv='refresh' content='5'/>\
-    <title>ESP32 Demo</title>\
-    <style>\
-      body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
-    </style>\
-  </head>\
-  <body>\
-    <h1>Hello from ESP32!</h1>\
-    <p>Uptime: %02d:%02d:%02d</p>\
-    <img src=\"/test.svg\" />\
-  </body>\
-</html>",
+              <head>\
+                <meta http-equiv='refresh' content='5'/>\
+                <title>ESP32 Demo</title>\
+                <style>\
+                  body { background-color: #cccccc; font-family: Arial, Helvetica, Sans-Serif; Color: #000088; }\
+                </style>\
+              </head>\
+              <body>\
+                <h1>Hello from ESP32!</h1>\
+                <p>Uptime: %02d:%02d:%02d</p>\
+                <img src=\"/test.svg\" />\
+              </body>\
+            </html>",
 
            hr, min % 60, sec % 60
           );
   server->send(200, "text/html", temp);
 }
 
-void SmartGnome::handle_not_found() {
+void SmartGnome::handle_not_found()
+{
   String message = "File Not Found\n\n";
   message += "URI: ";
   message += server->uri();

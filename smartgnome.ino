@@ -52,7 +52,8 @@ boolean is_configured = false;
 /*LED GPIO pin*/
 const char led = 13;
 
-void callback(char* topic, byte* payload, unsigned int length) {
+void callback(char* topic, byte* payload, unsigned int length)
+{
   Serial.print("Message arrived [");
   Serial.print(topic);
   Serial.print("] ");
@@ -103,10 +104,10 @@ void callback(char* topic, byte* payload, unsigned int length) {
   } else {
     digitalWrite(BUILTIN_LED, LOW);  // Turn the LED on
   }
-
 }
 
-void setup() {
+void setup()
+{
   WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0); //disable brownout detector
   pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
   Serial.begin(115200);
@@ -119,6 +120,14 @@ void setup() {
   /*start DHT sensor */
   dht.setup(DHTPIN, DHTesp::DHT22);
   Serial.println("DHT initiated");
+
+  Serial.print("Unique MAC ident: ");
+  Serial.print( WiFi.macAddress()[9]);
+  Serial.print( WiFi.macAddress()[10]);
+  Serial.print( WiFi.macAddress()[12]);
+  Serial.print( WiFi.macAddress()[13]);
+  Serial.print( WiFi.macAddress()[15]);
+  Serial.print( WiFi.macAddress()[16]);
 }
 
 void reconnect()
@@ -157,7 +166,7 @@ int readLuminosity()
   return adc1_get_raw( ADC1_CHANNEL_3 ); //Read analog
 }
 
-void loop_configured()
+void loop_mqtt()
 {
   if (!client.connected())
   {
@@ -216,15 +225,11 @@ void loop_configured()
   }
 }
 
-void loop_reset_config() {
-  SmartG.handle_client();
-}
-
 void loop()
 {
   if(WiFi.status() == WL_CONNECTED) 
   {
-    loop_configured();
+    loop_mqtt();
   }
   
   SmartG.handle_client();
