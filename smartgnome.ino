@@ -112,6 +112,9 @@ void setup()
   pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
   Serial.begin(115200);
 
+  Serial.print( SmartG.get_ssid_ap());
+  Serial.print( SmartG.get_mdns_hostname());
+
   SmartG.begin();
   
   client.setServer(mqtt_server, 1883);

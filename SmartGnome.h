@@ -8,10 +8,10 @@
 class SmartGnome
 {
 private:
-  char * ssid_sta;
-  char * password_sta;
-  char * ssid_ap;
-  char * hostname;
+  String ssid_sta;
+  String password_sta;
+  String ssid_ap;
+  String hostname;
   WebServer* server;
 
 protected:
@@ -33,9 +33,9 @@ public:
   int disconnect_station();
   int start_access_point();
   void start_mdns();
-  char * get_ssid_ap();
-  char * get_ssid_sta();
-  char * get_mdns_hostname();
+  String get_ssid_ap();
+  String get_ssid_sta();
+  String get_mdns_hostname();
   String get_ipaddress();
 
   // Core behavior

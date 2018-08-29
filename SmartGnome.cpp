@@ -7,10 +7,22 @@
 #include <WebServer.h>
 
 SmartGnome::SmartGnome() :
-ssid_ap("SmartGnome.o"),
-hostname("smartgnome"),
 server(new WebServer(80))
 {
+  char uid[6];
+  uid[0] = WiFi.macAddress()[9];
+  uid[1] = WiFi.macAddress()[10];
+  uid[2] = WiFi.macAddress()[12];
+  uid[3] = WiFi.macAddress()[13];
+  uid[4] = WiFi.macAddress()[15];
+  uid[5] = WiFi.macAddress()[16];
+
+  ssid_ap = "Smartgnome";
+  ssid_ap.concat(uid);
+  ssid_ap.concat(".o");
+
+  hostname = "smartgnome";
+  hostname.concat(uid);
 }
 
 SmartGnome::~SmartGnome()
@@ -31,7 +43,7 @@ int SmartGnome::connect_station()
   Serial.print("password_sta = ");
   Serial.println(password_sta);
   
-  WiFi.begin(ssid_sta, password_sta);
+  WiFi.begin(const_cast<char*>(ssid_sta.c_str()), const_cast<char*>(password_sta.c_str()));
   Serial.print("Connecting.");
 
   // Timeout after 30 seconds
@@ -82,7 +94,7 @@ int SmartGnome::disconnect_station()
 
 int SmartGnome::start_access_point()
 {
-  WiFi.softAP(ssid_ap);
+  WiFi.softAP(const_cast<char*>(ssid_ap.c_str()));
   Serial.println(WiFi.softAPIP());
   
   return 1;
@@ -90,22 +102,22 @@ int SmartGnome::start_access_point()
 
 void SmartGnome::start_mdns()
 {
-  if (MDNS.begin(hostname)) {
+  if (MDNS.begin(const_cast<char*>(hostname.c_str()))) {
     Serial.println("MDNS responder started");
   }
 }
 
-char * SmartGnome::get_ssid_ap()
+String SmartGnome::get_ssid_ap()
 {
   return ssid_ap;
 }
 
-char * SmartGnome::get_ssid_sta()
+String SmartGnome::get_ssid_sta()
 {
   return ssid_sta;
 }
 
-char * SmartGnome::get_mdns_hostname()
+String SmartGnome::get_mdns_hostname()
 {
   return hostname;
 }
@@ -196,8 +208,8 @@ void SmartGnome::reset()
 void SmartGnome::grab_config()
 {
   init_preferences(true);
-  ssid_sta = const_cast<char*>(get_ssid_station().c_str());
-  password_sta = const_cast<char*>(get_password_station().c_str());
+  ssid_sta = get_ssid_station();
+  password_sta = get_password_station();
   end_preferences();
 
   Serial.println("GRAB CONFIG");
@@ -205,7 +217,7 @@ void SmartGnome::grab_config()
   Serial.println(preferences.getString("ssid"));
   Serial.println(get_ssid_station());
   Serial.println(get_ssid_station().c_str());
-  Serial.println(const_cast<char*>(get_ssid_station().c_str()));
+  Serial.println(get_ssid_station());
   Serial.print("password_sta = ");
   Serial.println(password_sta);
 }
